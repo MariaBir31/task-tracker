@@ -1,5 +1,6 @@
 import argparse
 import sys
+from datetime import date
 
 from .models import Task, PRIORITIES
 from .sorting import SORT_STRATEGIES
@@ -11,6 +12,13 @@ def cmd_add(storage, args):
     if args.priority not in PRIORITIES:
         print("Invalid priority: " + args.priority)
         return 1
+    # R2: reject due dates that would later crash list/stats
+    if args.due:
+        try:
+            date.fromisoformat(args.due)
+        except ValueError:
+            print(f"Invalid due date: {args.due} (expected YYYY-MM-DD)")
+            return 1
     task = Task(
         id=storage.next_id(tasks),
         title=args.title,
