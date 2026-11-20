@@ -1,7 +1,7 @@
 """Sort strategies for `list --sort` (Strategy pattern).
 
-Each strategy is a function that takes a list of tasks and returns a new sorted list.
-To add a sort order, add one entry to SORT_STRATEGIES; the CLI picks it up automatically.
+Each strategy takes a list of tasks and returns a new sorted list.
+To add a sort order, add one entry to SORT_STRATEGIES; the CLI picks it up.
 """
 from .models import PRIORITIES
 

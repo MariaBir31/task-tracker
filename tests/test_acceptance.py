@@ -12,7 +12,8 @@ from tasktracker.storage import Storage
 def tasks_file(tmp_path, monkeypatch):
     path = tmp_path / "tasks.json"
     monkeypatch.setenv("TASKS_FILE", str(path))
-    main(["add", "banana", "--priority", "low", "--due", "2026-12-01", "--tags", "home"])
+    main(["add", "banana", "--priority", "low",
+          "--due", "2026-12-01", "--tags", "home"])
     main(["add", "Apple", "--priority", "high", "--tags", "work"])
     main(["add", "cherry", "--priority", "medium", "--due", "2026-11-25"])
     return path
