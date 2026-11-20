@@ -1,7 +1,9 @@
 import argparse
 import sys
+from datetime import date
 
 from .models import Task, PRIORITIES
+from .sorting import SORT_STRATEGIES
 from .storage import Storage
 
 
@@ -10,6 +12,13 @@ def cmd_add(storage, args):
     if args.priority not in PRIORITIES:
         print("Invalid priority: " + args.priority)
         return 1
+    # R2: reject due dates that would later crash list/stats
+    if args.due:
+        try:
+            date.fromisoformat(args.due)
+        except ValueError:
+            print(f"Invalid due date: {args.due} (expected YYYY-MM-DD)")
+            return 1
     task = Task(
         id=storage.next_id(tasks),
         title=args.title,
@@ -34,18 +43,7 @@ def cmd_list(storage, args):
     if args.tag:
         tasks = [t for t in tasks if args.tag in t.tags]
 
-    # sorting
-    if args.sort == "priority":
-        tasks = sorted(tasks, key=lambda t: PRIORITIES.index(t.priority), reverse=True)
-    elif args.sort == "due":
-        tasks = sorted(tasks, key=lambda t: t.due or "9999-12-31")
-    elif args.sort == "title":
-        tasks = sorted(tasks, key=lambda t: t.title.lower())
-    elif args.sort == "id":
-        tasks = sorted(tasks, key=lambda t: t.id)
-    else:
-        print("Unknown sort: " + args.sort)
-        return 1
+    tasks = SORT_STRATEGIES[args.sort](tasks)
 
     if not tasks:
         print("No tasks.")
@@ -105,7 +103,7 @@ def build_parser():
     l = sub.add_parser("list", help="list tasks")
     l.add_argument("--status", choices=["all", "open", "done"], default="all")
     l.add_argument("--tag")
-    l.add_argument("--sort", default="id")
+    l.add_argument("--sort", choices=list(SORT_STRATEGIES), default="id")
 
     d = sub.add_parser("done", help="mark task as done")
     d.add_argument("id", type=int)

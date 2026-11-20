@@ -22,4 +22,5 @@ class Storage:
             json.dump([t.to_dict() for t in tasks], f, indent=2)
 
     def next_id(self, tasks):
-        return len(tasks) + 1
+        # R1: use max id, not count, so ids stay unique after deletions
+        return max((t.id for t in tasks), default=0) + 1
