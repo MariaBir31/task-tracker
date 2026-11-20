@@ -9,6 +9,7 @@ Users add, list, complete, delete tasks and view statistics. Data lives in one J
 |---|---|
 | `tasktracker/__main__.py` | Entry point for `python -m tasktracker` |
 | `tasktracker/cli.py` | argparse parser + command handlers (`cmd_add`, `cmd_list`, ...) |
+| `tasktracker/sorting.py` | Sort strategies used by `list --sort` (Strategy pattern) |
 | `tasktracker/models.py` | `Task` dataclass, `PRIORITIES`, overdue logic |
 | `tasktracker/storage.py` | JSON load/save and ID generation |
 | `tests/` | pytest suite |
